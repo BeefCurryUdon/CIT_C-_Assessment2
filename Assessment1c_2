@@ -1,0 +1,122 @@
+//*******************************************************************
+// Programmer: Jinsun Kim
+// Date: 17 May 2020
+// Software: Microsoft Visual Studio 2019 Community Edition
+// Platform: Microsoft Windows 10 Home 64bit
+// Purpose: Assessment1c_2 Sorting and searching from arrays
+//*******************************************************************
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace assessment1c_2
+{
+    public partial class frmMain : Form
+    {
+        private StreamReader fileReader;
+
+        public frmMain()
+        {
+            InitializeComponent();
+        }
+        string fileName;
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            StreamReader inputFile;
+            inputFile = File.OpenText("1D_array.txt");
+            while (!inputFile.EndOfStream)
+            {
+                lstResult.Items.Add(inputFile.ReadLine());
+            }
+            txtStatus.Text = "Unsorted Data";
+            btnLoad.Enabled = false;
+        }
+
+        
+        
+        private void btnSort_Click(object sender, EventArgs e)
+        {
+            string[] data = File.ReadAllLines("1D_array.txt");
+
+            int[] arrInt = Array.ConvertAll(data, int.Parse);
+
+            
+
+            for (int i = 0; i < arrInt.Length - 1; i++)
+            {
+                for (int j = i + 1; j > 0; j--)
+                {
+                    if (arrInt[j - 1] > arrInt[j])
+                    {
+                        int temp = arrInt[j - 1];
+                        arrInt[j - 1] = arrInt[j];
+                        arrInt[j] = temp;
+                    }
+                }
+            }
+            lstResult.Items.Clear();
+            foreach (int count in arrInt)
+                lstResult.Items.Add(Convert.ToString(count));
+            txtStatus.Text = "Sorted Data";
+            btnSort.Enabled = false;
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string[] data = File.ReadAllLines("1D_array.txt");
+
+            int[] arrInt = Array.ConvertAll(data, int.Parse);
+
+            for (int i = 0; i < arrInt.Length - 1; i++)
+            {
+                for (int j = i + 1; j > 0; j--)
+                {
+                    if (arrInt[j - 1] > arrInt[j])
+                    {
+                        int temp = arrInt[j - 1];
+                        arrInt[j - 1] = arrInt[j];
+                        arrInt[j] = temp;
+                    }
+                }
+            }
+
+            int high = 0;
+            int mid = 1000;
+            int low = arrInt.Length - 1;
+            int item;
+            bool result = false;
+
+            item = Convert.ToInt32(txtSearch.Text);
+
+            while (low >= high)
+            {
+                mid = (high + low) / 2;
+                if (item == arrInt[mid])
+                {
+                    result = true;
+                    break;
+                }
+                else if (item > arrInt[mid])
+                    high = mid + 1;
+                else
+                    low = mid - 1;
+            }
+            if (result)
+                txtResult.Text = "Item found at index " + Convert.ToString(mid);
+            else
+                txtResult.Text = "Cannot find item";
+        }
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+    }
+}
